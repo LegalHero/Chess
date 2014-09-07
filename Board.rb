@@ -38,6 +38,32 @@ class Board
     @grid = Board.create_grid
   end
   
+  def [](pos)
+    x, y = pos
+    @grid[y][x]
+  end
+  
+  def []=(pos, mark)
+    x, y = pos
+    @grid[y][x] = mark
+  end
+  
+  def can_move_from?(color, pos)
+    has_piece_at?(color, pos)
+  end
+  
+  def has_piece_at?(color, pos)
+    !!(self[pos] && self[pos].color == color)
+  end
+  
+  def has_moves_from?(pos)
+    true
+  end
+  
+  def valid_moves(pos)
+    piece = self[pos]
+  end
+  
   def inspect
     display
   end
@@ -47,9 +73,10 @@ class Board
   end
   
   def render
-    render_string = ""
+    render_string = "   A  B  C  D  E  F  G  H \n"
     
     grid.each_with_index do |row, y|
+      render_string += "#{y} "
       row.each_with_index do |col, x|
         string = grid[y][x] ? " #{grid[y][x].symbol} " : "   "
         render_string += (y + x).even? ? string.on_light_black : string.on_white
