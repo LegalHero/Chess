@@ -33,7 +33,8 @@ class SlidingPiece < Piece
       
       cardinal
     end
-
+    
+    #need to take four nested arrays and un-nest them for one array with all moves
     super(total_possible_moves.flatten(1))
   end
 end
@@ -79,5 +80,13 @@ class Knight < SteppingPiece
 end
 
 class Pawn < Piece
-  
+  def moves
+    total_possible_moves = PAWN_DIRS.map do |dir|
+      dx = dir[0] + pos[0]
+      dy = (color === "B") ? pos[1] + dir[1] : pos[1] - dir[1] 
+      move = [dx, dy]
+    end
+    
+    super(total_possible_moves)
+  end
 end
