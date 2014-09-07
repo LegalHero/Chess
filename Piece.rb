@@ -37,37 +37,39 @@ class Piece
   end
   
   def moves(total_possible)
-    total_possible.select { |move| move.all? { |coord| (0..7).include?(coord) } }
+    total = total_possible.select { |move| move.all? { |coord| (0..7).include?(coord) } }
+    return nil unless total.length > 0
+    total
   end
 end
 
 class SlidingPiece < Piece
   def moves(dirs)
     total_possible_moves = dirs.map do |dir|
-      cardinal = []
+      vector = []
       8.times do |n|
         #n + 1 so current position not included (i.e with n = 0)
         #multiply by dir coord to ensure that 0s are never altered
         #add to position to anchor to piece
         dx, dy = (dir[0] * (n + 1) + pos[0]), (dir[1] * (n + 1) + pos[1])
-        cardinal.push([dx,dy])
+        vector.push([dx,dy])
       end
       
-      cardinal
+      super(vector)
     end
     
-    #need to take four nested arrays and un-nest them for one array with all moves
-    super(total_possible_moves.flatten(1))
+    total_possible_moves.compact
   end
 end
 
 class SteppingPiece < Piece
   def moves(dirs)
     total_possible_moves = dirs.map do |dir|
-      move = [pos[0] + dir[0], pos[1] + dir[1]]
+      move = [[pos[0] + dir[0], pos[1] + dir[1]]]
+      super(move)
     end
     
-    super(total_possible_moves)
+    total_possible_moves.compact
   end
 end
 

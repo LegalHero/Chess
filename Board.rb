@@ -49,7 +49,7 @@ class Board
   end
   
   def can_move_from?(color, pos)
-    has_piece_at?(color, pos)
+    has_piece_at?(color, pos) && has_moves_from?(pos)
   end
   
   def has_piece_at?(color, pos)
@@ -57,7 +57,7 @@ class Board
   end
   
   def has_moves_from?(pos)
-    true
+    valid_moves(pos).length > 0
   end
   
   def valid_moves(pos)
