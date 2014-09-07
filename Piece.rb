@@ -6,8 +6,11 @@ ROOK_DIRS = [[-1,0], [1,0], [0,-1], [0,1]]
 #Pawn dirs are at most three, but more variable, easier to handle directly in class
 
 class Piece
-  def initialize(color)
+  attr_accessor :color, :pos
+  
+  def initialize(pos, color)
     @color = color
+    @pos = pos
   end
 end
 
@@ -15,6 +18,13 @@ class SlidingPiece < Piece
 end
 
 class SteppingPiece < Piece
+  def moves(dirs)
+    total_possible_moves = dirs.map do |dir|
+      move = [pos[0] + dir[0], pos[1] + dir[1]]
+    end
+    
+    total_possible_moves.select { |move| move.all? { |coord| (0..7).include?(coord) } }
+  end
 end
 
 class Queen < SlidingPiece
