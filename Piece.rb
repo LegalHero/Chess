@@ -3,7 +3,7 @@ BISHOP_DIRS = [[-1,-1], [-1,1], [1,-1], [1,1]]
 ROOK_DIRS = [[-1,0], [1,0], [0,-1], [0,1]]
 #Queen and King dirs are the combination of Bishop and Rook dirs
 
-PAWN_DIRS = [[0,1], [0,2], [-1,1], [1,1]]
+PAWN_DIRS = [[0,2], [0,1], [-1,1], [1,1]]
 
 
 class Piece
@@ -83,10 +83,19 @@ class Pawn < Piece
   def moves
     total_possible_moves = PAWN_DIRS.map do |dir|
       dx = dir[0] + pos[0]
+      
+      #white on the bottom
       dy = (color === "B") ? pos[1] + dir[1] : pos[1] - dir[1] 
+      
       move = [dx, dy]
     end
     
+    total_possible_moves = total_possible_moves.drop(1) unless starting_position?
+    
     super(total_possible_moves)
+  end
+  
+  def starting_position?
+    ((color == "B" && pos[1] == 1) || (color == "W" && pos[1] == 6)) 
   end
 end
