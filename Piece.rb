@@ -37,9 +37,15 @@ class Rook < SlidingPiece
 end
 
 class King < SteppingPiece
+  def moves
+    super(BISHOP_DIRS + ROOK_DIRS)
+  end
 end
 
 class Knight < SteppingPiece
+  def moves
+    super(KNIGHT_DIRS)
+  end
 end
 
 class Pawn < Piece
