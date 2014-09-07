@@ -23,7 +23,8 @@ PAWN_DIRS = [[0,2], [0,1], [-1,1], [1,1]]
 
 
 class Piece
-  attr_accessor :color, :pos
+  attr_accessor :pos
+  attr_reader :symbol, :color
   
   def self.assign_symbol(color, type)
     TOKENS[color][type]

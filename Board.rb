@@ -1,4 +1,5 @@
 require_relative "Piece"
+require "colorize"
 
 class Board
   attr_accessor :grid
@@ -35,5 +36,27 @@ class Board
   
   def initialize
     @grid = Board.create_grid
+  end
+  
+  def inspect
+    display
+  end
+  
+  def display
+    puts render
+  end
+  
+  def render
+    render_string = ""
+    
+    grid.each_with_index do |row, y|
+      row.each_with_index do |col, x|
+        string = grid[y][x] ? " #{grid[y][x].symbol} " : "   "
+        render_string += (y + x).even? ? string.on_light_black : string.on_white
+      end
+      render_string += "\n"
+    end
+    
+    render_string
   end
 end
