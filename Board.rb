@@ -29,19 +29,16 @@ class Board
   end
   
   def check?(from, to, color)
-    
-    #need to deepdup grid and make new board from it to make moves
-    new_board = Board.new(dup(@grid))
+    #need to make new board with duped pieces in order to move them around and not the originals
+    new_board = dup
     new_board.move(from, to)
     
     #find king on new board after move, in case king is the one being moved
     king = new_board.find_king(color)
     
-    new_board.grid.each_with_index do |col, y|
-      col.each_with_index do |space, x|
-        next unless space && space.color != color
-        return true if valid_moves([x,y]).include?(king.pos)
-      end
+    new_board.pieces.each do |piece|
+      next unless piece.color != color
+      return true if new_board.valid_moves(piece.pos).include?(king.pos)
     end
     
     false
@@ -57,15 +54,14 @@ class Board
   end
   
   def find_king(color)
-    grid.each do |col|
-      col.each do |space|
-        return space if space.is_a?(King) && space.color == color
-      end
-    end
+    pieces.select { |piece| piece.class == King && piece.color == color }.first
   end
   
   def dup
-    pieces.each
+    new_board = Board.new(false)
+    pieces.each { |piece| piece.class.new(piece.pos, piece.color, new_board)}
+    
+    new_board
   end
   
   def pieces
@@ -82,7 +78,16 @@ class Board
   
   def move(from, to)
     self[from].pos = to
-    self[to], self[from] = self[from], nil
+    capture_piece(to) if self[to]
+    self[to], = self[from]
+    self[from] = nil
+  end
+  
+  def capture_piece(pos)
+    captured_piece = self[pos]
+    self[pos] = nil
+
+    captured_piece
   end
   
   def has_piece_at?(color, pos)
