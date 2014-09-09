@@ -23,15 +23,8 @@ class Board
   def self.place_royalty(color)
     y = (color == "B") ? 0 : 7
     
-    royalty = [
-      Rook.new([0, y], color), 
-      Knight.new([1, y], color),
-      Bishop.new([2, y], color),
-      Queen.new([3, y], color),
-      King.new([4, y], color),
-      Bishop.new([5, y], color),
-      Knight.new([6, y], color),
-      Rook.new([7, y], color)]
+    royalty = [Rook.new([0, y], color), Knight.new([1, y], color), Bishop.new([2, y], color), Queen.new([3, y], color),
+               King.new([4, y], color), Bishop.new([5, y], color), Knight.new([6, y], color), Rook.new([7, y], color)]
   end
   
   def initialize
@@ -52,6 +45,10 @@ class Board
     has_piece_at?(color, pos) && has_moves_from?(pos)
   end
   
+  def can_move_to?(from, to)
+    valid_moves(from).include?(to)
+  end
+  
   def has_piece_at?(color, pos)
     !!(self[pos] && self[pos].color == color)
   end
@@ -68,12 +65,12 @@ class Board
       available = vector.take_while { |coord| !self[coord] }
       unavailable = vector.drop_while { |coord| !self[coord]}
       
-      #may need to add location even if piece is present as long as it's an opposing piece
+      #may need to add first unavailable location as long as it's an opposing piece
       available.push(unavailable.shift) if unavailable.first && self[unavailable.first].color != piece.color
       available
     end
     
-    valid_moves.reject { |vector| vector.length == 0 }
+    valid_moves.reject { |vector| vector.length == 0 }.flatten(1)
   end
   
   def pawn_valid_moves(pawn)
