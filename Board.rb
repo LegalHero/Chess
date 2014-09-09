@@ -62,17 +62,26 @@ class Board
   
   def valid_moves(pos)
     piece = self[pos]
-    # return pawn_valid_moves(piece) if piece.class == Pawn
+    return pawn_valid_moves(piece) if piece.class == Pawn
     
     valid_moves = piece.moves.map do |vector|
       available = vector.take_while { |coord| !self[coord] }
       unavailable = vector.drop_while { |coord| !self[coord]}
-    
+      
+      #may need to add location even if piece is present as long as it's an opposing piece
       available.push(unavailable.shift) if unavailable.first && self[unavailable.first].color != piece.color
       available
     end
     
     valid_moves.reject { |vector| vector.length == 0 }
+  end
+  
+  def pawn_valid_moves(pawn)
+    attacking, moving = pawn.moves.partition { |move| move[0] != pawn.pos[0] }
+    attacking = attacking.keep_if { |move| self[move] && self[move].color != pawn.color }
+    moving = moving.reject { |move| self[move] }
+    
+    moving.concat(attacking)
   end
   
   def inspect

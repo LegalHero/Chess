@@ -113,7 +113,6 @@ class Pawn < Piece
       
       move = [dx, dy]
     end
-    
     total_possible_moves = total_possible_moves.drop(1) unless starting_position?
     
     super(total_possible_moves)
