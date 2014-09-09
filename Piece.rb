@@ -1,18 +1,6 @@
 # coding: UTF-8
-TOKENS = { "W" => 
-            { "King" => "♔" , 
-              "Queen" => "♕",
-              "Rook" => "♖", 
-              "Bishop" => "♗",
-              "Knight" => "♘",
-              "Pawn" => "♙" }, 
-          "B" =>
-           { "King" => "♚", 
-             "Queen" => "♛", 
-             "Rook" => "♜", 
-             "Bishop" => "♝", 
-             "Knight" => "♞", 
-             "Pawn" => "♟" } }
+TOKENS = { "W" => { "King" => "♔" , "Queen" => "♕", "Rook" => "♖", "Bishop" => "♗","Knight" => "♘", "Pawn" => "♙" }, 
+           "B" => { "King" => "♚", "Queen" => "♛", "Rook" => "♜", "Bishop" => "♝", "Knight" => "♞", "Pawn" => "♟" } }
 
 KNIGHT_DIRS = [[-1,-2],[-1,2],[1,-2],[1,2],[-2,-1],[-2,1],[2,-1],[2,1]]
 BISHOP_DIRS = [[-1,-1], [-1,1], [1,-1], [1,1]]
@@ -30,10 +18,11 @@ class Piece
     TOKENS[color][type]
   end
   
-  def initialize(pos, color)
+  def initialize(pos, color, board)
     @color = color
     @pos = pos
     @symbol = Piece.assign_symbol(@color, self.class.to_s)
+    board[pos] = self
   end
   
   def moves(total_possible)

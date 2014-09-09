@@ -4,37 +4,34 @@ require "colorize"
 class Board
   attr_accessor :grid
   
-  def self.create_grid
-    matrix = Array.new(4) { Array.new(8) }
-    matrix.unshift(Board.place_pawns("B")).push(Board.place_pawns("W"))
-    matrix.unshift(Board.place_royalty("B")).push(Board.place_royalty("W"))
-    
-    matrix
+  def initialize(place_pieces = true)
+    @grid = Array.new(8) { Array.new(8) }
+    fill_grid if place_pieces
   end
   
-  def self.place_pawns(color)
+  def fill_grid
+    place_pawns("B").place_pawns("W").place_royalty("B").place_royalty("W")
+  end
+  
+  def place_pawns(color)
     y = (color == "B") ? 1 : 6
-    pawns = []
-    8.times { |n| pawns.push(Pawn.new([n, y], color)) }
+    8.times { |x| Pawn.new([x, y], color, self) }
     
-    pawns
+    self
   end
   
-  def self.place_royalty(color)
+  def place_royalty(color)
     y = (color == "B") ? 0 : 7
+    royalty = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+    8.times { |x| royalty[x].new([x, y], color, self) } 
     
-    royalty = [Rook.new([0, y], color), Knight.new([1, y], color), Bishop.new([2, y], color), Queen.new([3, y], color),
-               King.new([4, y], color), Bishop.new([5, y], color), Knight.new([6, y], color), Rook.new([7, y], color)]
+    self
   end
   
-  def initialize(grid = false)
-    @grid = grid ? grid : Board.create_grid
-  end
-  
-  def check(from, to, color)
+  def check?(from, to, color)
     
     #need to deepdup grid and make new board from it to make moves
-    new_board = Board.new(deepdup(@grid))
+    new_board = Board.new(dup(@grid))
     new_board.move(from, to)
     
     #find king on new board after move, in case king is the one being moved
@@ -50,6 +47,15 @@ class Board
     false
   end
   
+  def checkmate?(color)
+    king = find_king(color)
+    valid_moves(king.pos).each do |move|
+      return false unless check?(king.pos, move, color)
+    end
+    
+    return true
+  end
+  
   def find_king(color)
     grid.each do |col|
       col.each do |space|
@@ -58,9 +64,12 @@ class Board
     end
   end
   
-  def deepdup(grid)
-    return grid unless grid.is_a?(Array)
-    grid.map { |sub| sub = deepdup(sub) }
+  def dup
+    pieces.each
+  end
+  
+  def pieces
+    grid.flatten.compact
   end
   
   def can_move_from?(color, pos)
@@ -72,8 +81,8 @@ class Board
   end
   
   def move(from, to)
-    self[from], self[to] = nil, self[from]
-    self[to].pos = to
+    self[from].pos = to
+    self[to], self[from] = self[from], nil
   end
   
   def has_piece_at?(color, pos)
