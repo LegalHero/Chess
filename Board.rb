@@ -78,16 +78,10 @@ class Board
   
   def move(from, to)
     self[from].pos = to
-    capture_piece(to) if self[to]
-    self[to], = self[from]
-    self[from] = nil
-  end
-  
-  def capture_piece(pos)
-    captured_piece = self[pos]
-    self[pos] = nil
-
-    captured_piece
+    captured = self[to]
+    self[to], self[from] = self[from], nil
+    
+    captured
   end
   
   def has_piece_at?(color, pos)
