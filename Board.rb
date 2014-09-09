@@ -49,6 +49,11 @@ class Board
     valid_moves(from).include?(to)
   end
   
+  def move(from, to)
+    self[from], self[to] = nil, self[from]
+    self[to].pos = [to]
+  end
+  
   def has_piece_at?(color, pos)
     !!(self[pos] && self[pos].color == color)
   end
