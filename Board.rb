@@ -27,18 +27,40 @@ class Board
                King.new([4, y], color), Bishop.new([5, y], color), Knight.new([6, y], color), Rook.new([7, y], color)]
   end
   
-  def initialize
-    @grid = Board.create_grid
+  def initialize(grid = false)
+    @grid = grid ? grid : Board.create_grid
   end
   
-  def [](pos)
-    x, y = pos
-    @grid[y][x]
+  def check(from, to, color)
+    
+    #need to deepdup grid and make new board from it to make moves
+    new_board = Board.new(deepdup(@grid))
+    new_board.move(from, to)
+    
+    #find king on new board after move, in case king is the one being moved
+    king = new_board.find_king(color)
+    
+    new_board.grid.each_with_index do |col, y|
+      col.each_with_index do |space, x|
+        next unless space && space.color != color
+        return true if valid_moves([x,y]).include?(king.pos)
+      end
+    end
+    
+    false
   end
   
-  def []=(pos, mark)
-    x, y = pos
-    @grid[y][x] = mark
+  def find_king(color)
+    grid.each do |col|
+      col.each do |space|
+        return space if space.is_a?(King) && space.color == color
+      end
+    end
+  end
+  
+  def deepdup(grid)
+    return grid unless grid.is_a?(Array)
+    grid.map { |sub| sub = deepdup(sub) }
   end
   
   def can_move_from?(color, pos)
@@ -51,7 +73,7 @@ class Board
   
   def move(from, to)
     self[from], self[to] = nil, self[from]
-    self[to].pos = [to]
+    self[to].pos = to
   end
   
   def has_piece_at?(color, pos)
@@ -84,6 +106,16 @@ class Board
     moving = moving.reject { |move| self[move] }
     
     moving.concat(attacking)
+  end
+  
+  def [](pos)
+    x, y = pos
+    @grid[y][x]
+  end
+  
+  def []=(pos, mark)
+    x, y = pos
+    @grid[y][x] = mark
   end
   
   def inspect
