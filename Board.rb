@@ -46,6 +46,8 @@ class Board
   
   def checkmate?(color)
     king = find_king(color)
+    return false if valid_moves(king.pos).length == 0
+    
     valid_moves(king.pos).each do |move|
       return false unless check?(king.pos, move, color)
     end

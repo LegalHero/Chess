@@ -1,3 +1,6 @@
+class InvalidInputError < StandardError
+end
+
 require_relative "Board"
 
 class Game
@@ -38,5 +41,37 @@ class Player
   def initialize(name, color)
     @name = name
     @color = color
+  end
+  
+  def make_move(board)
+    from = get_from(board)
+    to = get_to(board)
+  end
+  
+  def get_from(board)
+    begin
+      puts "Where would like you to move from? (Ex. A5)"
+      input = gets.chomp
+      parse_input(input)
+    rescue InvalidInputError
+      puts "That is not a valid space!"
+      retry
+    end
+  end
+  
+  def get_to(board)
+  end
+  
+  def parse_input(input)
+    raise InvalidInputError unless ("A".."H").include?(input[0]) && (0..7).include?(input[1])
+    
+    transform_input(input)
+  end
+  
+  def transform_input(input)
+    letter = input[0]
+    input[0] = ("A".."H").index(letter)
+    
+    input
   end
 end
