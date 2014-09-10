@@ -10,6 +10,9 @@ end
 class CantMoveThereError < StandardError
 end
 
+class CantMoveIntoCheckError < StandardError
+end
+
 class Board
   attr_accessor :grid
   
@@ -88,6 +91,7 @@ class Board
   
   def can_move_to?(from, to)
     raise CantMoveThereError unless valid_moves(from).include?(to)
+    raise CantMoveIntoCheckError if check?(from, to, self[from].color)
     
     true
   end

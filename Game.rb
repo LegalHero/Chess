@@ -95,6 +95,9 @@ class Player
     rescue CantMoveThereError
       puts "\nThat's not in your list of valid moves!"
       retry
+    rescue CantMoveIntoCheckError
+      puts "\nYou can't move into check!"
+      retry
     end
     
     to
