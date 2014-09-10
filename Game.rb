@@ -39,13 +39,18 @@ class Game
   
   def winner
     winner = board.checkmate?("W") ? player1 : player2
-    puts "#{winner.name.capitalize} wins!"
+    display
+    puts "\nCheckmate! \n#{winner.name.capitalize} wins!"
+    puts
+    
     exit
   end
 end
 
 class Player
-  attr_reader :name, :color, :captured
+  attr_reader :name, :color
+  attr_accessor :captured
+  
   def initialize(name, color)
     @name = name
     @color = color
@@ -55,7 +60,7 @@ class Player
   def make_move(board)
     from = get_from(board)
     to = get_to(board, from)
-    maybe_caputred = board.move(from, to)
+    maybe_captured = board.move(from, to)
     @captured << maybe_captured.symbol if maybe_captured
   end
   
