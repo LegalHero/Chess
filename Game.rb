@@ -45,33 +45,41 @@ class Player
   
   def make_move(board)
     from = get_from(board)
-    to = get_to(board)
+    to = get_to(board, from)
   end
   
   def get_from(board)
     begin
-      puts "Where would like you to move from? (Ex. A5)"
+      puts "\nWhere would like you to move from? (Ex. A5)"
       input = gets.chomp
-      parse_input(input)
+      board.can_move_from?(color, parse_input(input))
     rescue InvalidInputError
-      puts "That is not a valid space!"
+      puts "\nThat is not a valid input!"
+      retry
+    rescue NoPieceError
+      puts "\nYou don't have a piece there!"
+      retry
+    rescue NoMoveError
+      puts "\nYou have no moves from there!"
       retry
     end
+    
+    input
   end
   
-  def get_to(board)
+  def get_to(board, from)
   end
   
   def parse_input(input)
-    raise InvalidInputError unless ("A".."H").include?(input[0]) && (0..7).include?(input[1]) && input.length == 2
+    raise InvalidInputError unless ("A".."H").include?(input[0]) && ("0".."7").include?(input[1]) && input.length == 2
     
     transform_input(input)
   end
   
   def transform_input(input)
     letter = input[0]
-    input[0] = ("A".."H").index(letter)
+    input[0] = ("A".."H").to_a.index(letter).to_s
     
-    input
+    input.split("").map(&:to_i)
   end
 end

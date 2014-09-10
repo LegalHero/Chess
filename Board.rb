@@ -1,6 +1,15 @@
 require_relative "Piece"
 require "colorize"
 
+class NoPieceError < StandardError
+end
+
+class NoMoveError < StandardError
+end
+
+class CantMoveThereError < StandardError
+end
+
 class Board
   attr_accessor :grid
   
@@ -71,11 +80,16 @@ class Board
   end
   
   def can_move_from?(color, pos)
-    has_piece_at?(color, pos) && has_moves_from?(pos)
+    raise NoPieceError unless has_piece_at?(color, pos)
+    raise NoMoveError unless has_moves_from?(pos)
+    
+    true
   end
   
   def can_move_to?(from, to)
-    valid_moves(from).include?(to)
+    raise CantMoveThereError unless valid_moves(from).include?(to)
+    
+    true
   end
   
   def move(from, to)
