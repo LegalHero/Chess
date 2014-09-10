@@ -13,16 +13,24 @@ class Game
   
   def play
     until gameover?
-      board.display
+      display
       player1.make_move(board)
       
       winner if gameover?
       
-      board.display
+      display
       player2.make_move(board)
     end
     
     winner
+  end
+  
+  def display
+    puts "\n#{player1.name} has captured"
+    puts "#{player1.captured}"
+    board.display
+    puts "\n#{player2.captured}"
+    puts "#{player2.name} has captured"
   end
   
   def gameover?
@@ -37,7 +45,7 @@ class Game
 end
 
 class Player
-  attr_reader :name, :color
+  attr_reader :name, :color, :captured
   def initialize(name, color)
     @name = name
     @color = color
