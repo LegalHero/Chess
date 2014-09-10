@@ -63,7 +63,7 @@ class Player
   end
   
   def parse_input(input)
-    raise InvalidInputError unless ("A".."H").include?(input[0]) && (0..7).include?(input[1])
+    raise InvalidInputError unless ("A".."H").include?(input[0]) && (0..7).include?(input[1]) && input.length == 2
     
     transform_input(input)
   end
