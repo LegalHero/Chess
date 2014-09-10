@@ -19,7 +19,7 @@ class Game
       winner if gameover?
       
       board.display
-      player2.make_move
+      player2.make_move(board)
     end
     
     winner
@@ -41,18 +41,21 @@ class Player
   def initialize(name, color)
     @name = name
     @color = color
+    @captured = []
   end
   
   def make_move(board)
     from = get_from(board)
     to = get_to(board, from)
+    maybe_caputred = board.move(from, to)
+    @captured << maybe_captured.symbol if maybe_captured
   end
   
   def get_from(board)
     begin
-      puts "\nWhere would like you to move from? (Ex. A5)"
-      input = gets.chomp
-      board.can_move_from?(color, parse_input(input))
+      puts "\nWhere would like you to move from, #{name.capitalize}? (Ex. A5)"
+      from = parse_input(gets.chomp)
+      board.can_move_from?(color, from)
     rescue InvalidInputError
       puts "\nThat is not a valid input!"
       retry
@@ -64,10 +67,24 @@ class Player
       retry
     end
     
-    input
+    from
   end
   
   def get_to(board, from)
+    begin
+      puts "\nWhere would like you to move to? Available moves:"
+      p untransform(board.valid_moves(from))
+      to = parse_input(gets.chomp)
+      board.can_move_to?(from, to)
+    rescue InvalidInputError
+      puts "\nThat is not a valid input!"
+      retry
+    rescue CantMoveThereError
+      puts "\nThat's not in your list of valid moves!"
+      retry
+    end
+    
+    to
   end
   
   def parse_input(input)
@@ -81,5 +98,14 @@ class Player
     input[0] = ("A".."H").to_a.index(letter).to_s
     
     input.split("").map(&:to_i)
+  end
+  
+  def untransform(moves)
+    letters = ("A".."H").to_a
+    
+    moves.map do |move|
+      move[0] = letters[move[0]]
+      move.join
+    end.join(", ")
   end
 end
