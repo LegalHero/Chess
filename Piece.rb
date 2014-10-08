@@ -18,11 +18,11 @@ class Piece
     TOKENS[color][type]
   end
   
-  def initialize(pos, color, board)
+  def initialize(pos = nil, color, board)
     @color = color
     @pos = pos
     @symbol = Piece.assign_symbol(@color, self.class.to_s)
-    board[pos] = self
+    board[pos] = self if pos
   end
   
   def moves(total_possible)

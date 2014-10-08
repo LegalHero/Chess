@@ -6,16 +6,20 @@ class LIChessGame
   def initialize
     @board = Board.new(false)
     @game = Game.new("Matt", "Anthony", @board)
-    get_position
+    setup_board
     @game.play
+  end
+  
+  def setup_board
+    pos_string = get_position
+    decode_piece_string(pos_string)
   end
   
   def get_position
     #GET request for the daily puzzle, parsing the JSON into Ruby Hash
     game = JSON.parse(Net::HTTP.get("en.lichess.org", "/api/puzzle/daily"))
     #Don't care about castling opportunities, move counts etc., just need the first field of the FEN record
-    pos_string = game["position"].split.first
-    decode_piece_string(pos_string)
+    game["position"].split.first
   end
   
   def decode_piece_string(board_state)
