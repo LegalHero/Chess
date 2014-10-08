@@ -2,19 +2,18 @@ require_relative "Game"
 require "net/http"
 require "json"
 
-class LIChessGame
+class LIChessGame < Game
   def initialize
     @board = Board.new(false)
-    @game = Game.new("Matt", "Anthony", @board)
+    super("Matt", "Anthony", @board)
     setup_board
-    @game.play
   end
   
   def setup_board
     pos_string = get_position
     decode_piece_string(pos_string)
-    fill_in_captured_pieces(@game.player1)
-    fill_in_captured_pieces(@game.player2)
+    fill_in_captured_pieces(self.player1)
+    fill_in_captured_pieces(self.player2)
   end
   
   def get_position
@@ -66,4 +65,4 @@ class LIChessGame
   end
 end
 
-LIChessGame.new
+LIChessGame.new.play
