@@ -125,11 +125,3 @@ class Player
     end.join(", ")
   end
 end
-
-# puts "\nEnter name 1: "
-# name1 = gets.chomp
-# puts "\nEnter name2: "
-# name2 = gets.chomp
-#
-# puts "\nWelcome to Chess!"
-# Game.new(name1, name2).play
