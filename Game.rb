@@ -6,8 +6,8 @@ require_relative "Board"
 class Game
   attr_reader :player1, :player2, :board
   
-  def initialize(name1, name2)
-    @board = Board.new
+  def initialize(name1, name2, board = Board.new)
+    @board = board
     @player1, @player2 = Player.new(name1, "B"), Player.new(name2, "W")
   end
   
@@ -126,10 +126,10 @@ class Player
   end
 end
 
-puts "\nEnter name 1: "
-name1 = gets.chomp
-puts "\nEnter name2: "
-name2 = gets.chomp
-
-puts "\nWelcome to Chess!"
-Game.new(name1, name2).play
+# puts "\nEnter name 1: "
+# name1 = gets.chomp
+# puts "\nEnter name2: "
+# name2 = gets.chomp
+#
+# puts "\nWelcome to Chess!"
+# Game.new(name1, name2).play
