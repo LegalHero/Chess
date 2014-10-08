@@ -13,6 +13,8 @@ class LIChessGame
   def setup_board
     pos_string = get_position
     decode_piece_string(pos_string)
+    fill_in_captured_pieces(@game.player1)
+    fill_in_captured_pieces(@game.player2)
   end
   
   def get_position
@@ -46,6 +48,21 @@ class LIChessGame
     class_string = TOKENS[color].keys.select { |key| key.match(/^#{char.capitalize}/)}.first
     #Core equivalent of Rails constantize/classify
     piece = Object.const_get(class_string).new(pos, color, @board)
+  end
+  
+  def fill_in_captured_pieces(player)
+    opponent_color = ["W", "B"].select { |char| char != player.color }.first
+    piece_symbols = TOKENS[opponent_color]
+    original_numbers = {"Queen" => 1, "Rook" => 2, "Knight" => 2, "Bishop" => 2, "Pawn" => 8}
+    
+    original_numbers.each do |class_string, quantity|
+      board_pieces = @board.pieces.select do |piece| 
+        piece.class.to_s == class_string && piece.color == opponent_color
+      end
+      
+      captured = quantity - board_pieces.length
+      captured.times { player.captured.push(piece_symbols[class_string]) }
+    end
   end
 end
 
