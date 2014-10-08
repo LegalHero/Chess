@@ -19,27 +19,28 @@ class LIChessGame
   end
   
   def decode_piece_string(board_state)
-    p board_state
-    board_state.split("/").each_with_index do |row, y|
-      # I believe rank is the technical term for each row in chess, I don't mean piece rank
-      decode_rank(row, y)
-    end
-  end
-  
-  def decode_rank(row, y)
-    x = 0
-    row.each_char do |space|
-      # Could directly cast to integer with Integer(space) but then would have to rescue error for chars
-      filler = space.to_i
-      filler > 0 ? x += filler - 1 : make_piece([x,y], space)
-      x += 1
+    x, y = 0, 0
+    board_state.each_char do |char|
+      if char == "/" 
+        y += 1
+        x = 0
+        next
+      else
+        # Could directly cast to integer with Integer(space) but then would have to rescue error for chars
+        filler = char.to_i
+        filler > 0 ? x += filler - 1 : make_piece([x,y], char)
+        #always need to add one to x, so if filler, need to add its value minus one
+        x += 1
+      end
     end
   end
   
   def make_piece(pos, char) 
     color = char.upcase == char ? "W" : "B"
+    #knights represented with n, need Kn for hash
     char = "Kn" if char.downcase == "n"
     class_string = TOKENS[color].keys.select { |key| key.match(/^#{char.capitalize}/)}.first
+    #Core equivalent of Rails constantize/classify
     piece = Object.const_get(class_string).new(pos, color, @board)
   end
 end
