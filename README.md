@@ -5,6 +5,7 @@
 * Utilizes three-tiered classical inheritance within the Piece class in order to maintain code DRYness.
 * Implements custom board duplication in order to make temporary moves for checking check and checkmate conditions.
 * Leverages colorize and clean display rendering in order to enhance enjoyablility.
+* NEW: Adds support for playing the [LI Chess](http://en.lichess.org) puzzle of the day, pulling down and decoding game state from API.
 
 ###Important
 
